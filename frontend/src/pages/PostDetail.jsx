@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Heart, MessageCircle, Pencil, Send, Trash2 } from "lucide-react";
+import { Heart, Loader2, MessageCircle, Pencil, Send, Trash2 } from "lucide-react";
 import api from "../api/axios";
 import Avatar from "../components/Avatar";
 import Spinner, { ButtonSpinner } from "../components/Spinner";
@@ -22,6 +22,7 @@ const PostDetail = () => {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [likeLoading, setLikeLoading] = useState(false);
+  const [deletingCommentId, setDeletingCommentId] = useState(null);
   const { user } = useAuth();
   const toast = useToast();
   const navigate = useNavigate();
@@ -107,11 +108,17 @@ const PostDetail = () => {
   };
 
   const handleDeleteComment = async (commentId) => {
+    if (deletingCommentId) {
+      return;
+    }
+
     const confirmed = window.confirm("Delete this comment?");
 
     if (!confirmed) {
       return;
     }
+
+    setDeletingCommentId(commentId);
 
     try {
       await api.delete(`/comments/${commentId}`);
@@ -119,6 +126,8 @@ const PostDetail = () => {
       toast.success("Comment deleted");
     } catch (error) {
       toast.error(getErrorMessage(error, "Could not delete comment"));
+    } finally {
+      setDeletingCommentId(null);
     }
   };
 
@@ -130,7 +139,7 @@ const PostDetail = () => {
     return (
       <section className="rounded-lg border border-slate-200 bg-white p-8 text-center">
         <h1 className="text-2xl font-bold text-slate-950">Post not found</h1>
-        <Link to="/" className="mt-4 inline-flex rounded-lg bg-slate-950 px-4 py-2 text-sm font-semibold text-white">
+        <Link to="/" className="btn-ombre mt-4 inline-flex rounded-lg px-4 py-2 text-sm font-semibold">
           Back home
         </Link>
       </section>
@@ -153,7 +162,7 @@ const PostDetail = () => {
           {isOwner ? (
             <Link
               to={`/edit-post/${post._id}`}
-              className="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
+              className="btn-outline inline-flex shrink-0 items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold"
             >
               <Pencil className="h-4 w-4" aria-hidden="true" />
               Edit
@@ -175,7 +184,7 @@ const PostDetail = () => {
             onClick={handleLike}
             disabled={likeLoading}
             className={`inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-bold transition disabled:cursor-not-allowed disabled:opacity-70 ${
-              post.likedByMe ? "bg-rose-600 text-white hover:bg-rose-700" : "border border-rose-200 text-rose-700 hover:bg-rose-50"
+              post.likedByMe ? "btn-ombre" : "btn-outline"
             }`}
           >
             {likeLoading ? (
@@ -211,7 +220,7 @@ const PostDetail = () => {
           <button
             type="submit"
             disabled={!user || isSubmitting}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-slate-950 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+            className="btn-ombre inline-flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
           >
             {isSubmitting ? <ButtonSpinner /> : <Send className="h-4 w-4" aria-hidden="true" />}
             {isSubmitting ? "Posting" : "Post comment"}
@@ -243,11 +252,16 @@ const PostDetail = () => {
                     {canDelete ? (
                       <button
                         type="button"
+                        disabled={deletingCommentId === comment._id}
                         onClick={() => handleDeleteComment(comment._id)}
-                        className="rounded-lg border border-rose-200 p-2 text-rose-600 transition hover:bg-rose-50"
-                        aria-label="Delete comment"
+                        className="rounded-lg border border-rose-200 p-2 text-rose-600 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-60"
+                        aria-label={deletingCommentId === comment._id ? "Deleting comment" : "Delete comment"}
                       >
-                        <Trash2 className="h-4 w-4" aria-hidden="true" />
+                        {deletingCommentId === comment._id ? (
+                          <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                        ) : (
+                          <Trash2 className="h-4 w-4" aria-hidden="true" />
+                        )}
                       </button>
                     ) : null}
                   </div>

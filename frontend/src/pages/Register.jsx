@@ -95,7 +95,7 @@ const Register = () => {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-70"
+          className="btn-ombre inline-flex w-full items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-bold disabled:cursor-not-allowed disabled:opacity-70"
         >
           {isSubmitting ? <ButtonSpinner /> : <UserPlus className="h-4 w-4" aria-hidden="true" />}
           {isSubmitting ? "Creating account" : "Create account"}

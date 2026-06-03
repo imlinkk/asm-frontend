@@ -65,7 +65,7 @@ const Navbar = () => {
               <button
                 type="button"
                 onClick={handleLogout}
-                className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-rose-200 hover:bg-rose-50 hover:text-rose-700"
+                className="btn-outline inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold"
               >
                 <LogOut className="h-4 w-4" aria-hidden="true" />
                 Logout
@@ -75,14 +75,14 @@ const Navbar = () => {
             <>
               <Link
                 to="/login"
-                className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
+                className="btn-outline inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold"
               >
                 <UserCircle className="h-4 w-4" aria-hidden="true" />
                 Login
               </Link>
               <Link
                 to="/register"
-                className="inline-flex items-center gap-2 rounded-lg bg-slate-950 px-3 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
+                className="btn-ombre inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold"
               >
                 <PenSquare className="h-4 w-4" aria-hidden="true" />
                 Register
@@ -113,7 +113,7 @@ const Navbar = () => {
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="mt-2 inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700"
+                  className="btn-outline mt-2 inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold"
                 >
                   <LogOut className="h-4 w-4" aria-hidden="true" />
                   Logout
@@ -124,7 +124,7 @@ const Navbar = () => {
                 <Link
                   to="/login"
                   onClick={() => setOpen(false)}
-                  className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700"
+                  className="btn-outline inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold"
                 >
                   <UserCircle className="h-4 w-4" aria-hidden="true" />
                   Login
@@ -132,7 +132,7 @@ const Navbar = () => {
                 <Link
                   to="/register"
                   onClick={() => setOpen(false)}
-                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-950 px-3 py-2 text-sm font-semibold text-white"
+                  className="btn-ombre inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold"
                 >
                   <PenSquare className="h-4 w-4" aria-hidden="true" />
                   Register

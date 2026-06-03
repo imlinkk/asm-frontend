@@ -14,6 +14,7 @@ const Profile = () => {
   const { user } = useAuth();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [deletingPostId, setDeletingPostId] = useState(null);
   const toast = useToast();
 
   useEffect(() => {
@@ -43,11 +44,17 @@ const Profile = () => {
   }, [toast]);
 
   const handleDelete = async (postId) => {
+    if (deletingPostId) {
+      return;
+    }
+
     const confirmed = window.confirm("Delete this post and its comments?");
 
     if (!confirmed) {
       return;
     }
+
+    setDeletingPostId(postId);
 
     try {
       await api.delete(`/posts/${postId}`);
@@ -55,6 +62,8 @@ const Profile = () => {
       toast.success("Post deleted");
     } catch (error) {
       toast.error(getErrorMessage(error, "Could not delete post"));
+    } finally {
+      setDeletingPostId(null);
     }
   };
 
@@ -72,7 +81,7 @@ const Profile = () => {
         </div>
         <Link
           to="/create-post"
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-950 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-slate-800"
+          className="btn-ombre inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold"
         >
           <PenSquare className="h-4 w-4" aria-hidden="true" />
           New post
@@ -89,7 +98,15 @@ const Profile = () => {
       <div className="mt-5 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         {loading
           ? Array.from({ length: 3 }, (_, index) => <PostCardSkeleton key={index} />)
-          : posts.map((post) => <PostCard key={post._id} post={post} canManage onDelete={handleDelete} />)}
+          : posts.map((post) => (
+              <PostCard
+                key={post._id}
+                post={post}
+                canManage
+                deleting={deletingPostId === post._id}
+                onDelete={handleDelete}
+              />
+            ))}
       </div>
 
       {!loading && posts.length === 0 ? (
@@ -100,7 +117,7 @@ const Profile = () => {
             action={
               <Link
                 to="/create-post"
-                className="inline-flex items-center gap-2 rounded-lg bg-slate-950 px-4 py-2 text-sm font-bold text-white"
+                className="btn-ombre inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-bold"
               >
                 <PenSquare className="h-4 w-4" aria-hidden="true" />
                 Create post

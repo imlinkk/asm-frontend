@@ -84,7 +84,7 @@ const PostForm = ({ initialValues, submitLabel = "Save Post", onSubmit }) => {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
+        className="btn-ombre inline-flex w-full items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-bold disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
       >
         {isSubmitting ? <ButtonSpinner /> : <Save className="h-4 w-4" aria-hidden="true" />}
         {isSubmitting ? "Saving" : submitLabel}

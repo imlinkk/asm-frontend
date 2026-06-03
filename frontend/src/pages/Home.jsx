@@ -124,7 +124,7 @@ const Home = () => {
               type="button"
               disabled={page === 1 || loading}
               onClick={() => setPage((value) => Math.max(value - 1, 1))}
-              className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
+              className="btn-outline rounded-lg px-4 py-2 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50"
             >
               Previous
             </button>
@@ -132,7 +132,7 @@ const Home = () => {
               type="button"
               disabled={page === totalPages || loading}
               onClick={() => setPage((value) => Math.min(value + 1, totalPages))}
-              className="rounded-lg bg-slate-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+              className="btn-ombre rounded-lg px-4 py-2 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50"
             >
               Next
             </button>

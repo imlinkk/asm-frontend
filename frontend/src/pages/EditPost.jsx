@@ -55,7 +55,7 @@ const EditPost = () => {
     return (
       <section className="rounded-lg border border-slate-200 bg-white p-8 text-center">
         <h1 className="text-2xl font-bold text-slate-950">Post not found</h1>
-        <Link to="/" className="mt-4 inline-flex rounded-lg bg-slate-950 px-4 py-2 text-sm font-semibold text-white">
+        <Link to="/" className="btn-ombre mt-4 inline-flex rounded-lg px-4 py-2 text-sm font-semibold">
           Back home
         </Link>
       </section>

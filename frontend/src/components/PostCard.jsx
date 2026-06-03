@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Heart, Pencil, Trash2 } from "lucide-react";
+import { ArrowRight, Heart, Loader2, Pencil, Trash2 } from "lucide-react";
 import Avatar from "./Avatar";
 import { formatDate } from "../utils/formatDate";
 
-const PostCard = ({ post, canManage = false, onDelete }) => {
+const PostCard = ({ post, canManage = false, deleting = false, onDelete }) => {
   const excerpt = post.content.length > 170 ? `${post.content.slice(0, 170)}...` : post.content;
 
   return (
@@ -39,24 +39,29 @@ const PostCard = ({ post, canManage = false, onDelete }) => {
             <>
               <Link
                 to={`/edit-post/${post._id}`}
-                className="rounded-lg border border-slate-200 p-2 text-slate-600 transition hover:bg-slate-100"
+                className="btn-outline rounded-lg p-2"
                 aria-label="Edit post"
               >
                 <Pencil className="h-4 w-4" aria-hidden="true" />
               </Link>
               <button
                 type="button"
+                disabled={deleting}
                 onClick={() => onDelete?.(post._id)}
-                className="rounded-lg border border-rose-200 p-2 text-rose-600 transition hover:bg-rose-50"
-                aria-label="Delete post"
+                className="rounded-lg border border-rose-200 p-2 text-rose-600 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-60"
+                aria-label={deleting ? "Deleting post" : "Delete post"}
               >
-                <Trash2 className="h-4 w-4" aria-hidden="true" />
+                {deleting ? (
+                  <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                ) : (
+                  <Trash2 className="h-4 w-4" aria-hidden="true" />
+                )}
               </button>
             </>
           ) : null}
           <Link
             to={`/posts/${post._id}`}
-            className="inline-flex items-center gap-1 rounded-lg bg-slate-950 px-3 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
+            className="btn-ombre inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-semibold"
           >
             Read
             <ArrowRight className="h-4 w-4" aria-hidden="true" />

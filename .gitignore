@@ -9,3 +9,4 @@ yarn-error.log*
 .backend.dev*.log
 .DS_Store
 Thumbs.db
+upload/avatars/

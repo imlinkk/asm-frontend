@@ -27,7 +27,7 @@ const Navbar = () => {
           <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-950 text-white">
             <BookOpenText className="h-5 w-5" aria-hidden="true" />
           </span>
-          <span className="text-lg">BlogSpace</span>
+          <span className="text-lg">Blog Chát Chít</span>
         </Link>
 
         <button

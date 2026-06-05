@@ -11,11 +11,21 @@ import { formatDate } from "../utils/formatDate";
 import { getErrorMessage } from "../utils/error";
 
 const Profile = () => {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deletingPostId, setDeletingPostId] = useState(null);
   const toast = useToast();
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [nameField, setNameField] = useState(user?.name || "");
+  const [avatarField, setAvatarField] = useState(user?.avatar || "");
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    setNameField(user?.name || "");
+    setAvatarField(user?.avatar || "");
+  }, [user]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -67,25 +77,139 @@ const Profile = () => {
     }
   };
 
+  const [uploading, setUploading] = useState(false);
+
+  const handleAvatarFileChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const form = new FormData();
+    form.append("avatar", file);
+
+    setUploading(true);
+
+    try {
+      const { data } = await api.post("/auth/me/avatar", form, {
+        headers: { "Content-Type": "multipart/form-data" }
+      });
+
+      setAvatarField(data.url);
+      // refresh global user so header and other UI update
+      try {
+        await refreshUser();
+      } catch (err) {
+        // ignore refresh errors
+      }
+
+      toast.success("Avatar uploaded");
+    } catch (error) {
+      toast.error(getErrorMessage(error, "Could not upload avatar"));
+    } finally {
+      setUploading(false);
+    }
+  };
+
   return (
     <section>
       <div className="grid gap-5 rounded-lg border border-slate-200 bg-white p-6 shadow-soft md:grid-cols-[auto_minmax(0,1fr)_auto] md:items-center">
-        <Avatar user={user} size="lg" />
+        <Avatar user={{ ...user, name: nameField, avatar: avatarField }} size="lg" />
         <div className="min-w-0">
-          <h1 className="truncate text-2xl font-bold text-slate-950">{user.name}</h1>
-          <p className="mt-2 flex items-center gap-2 text-sm font-medium text-slate-600">
-            <Mail className="h-4 w-4" aria-hidden="true" />
-            <span className="truncate">{user.email}</span>
-          </p>
-          <p className="mt-1 text-sm text-slate-500">Joined {formatDate(user.createdAt)}</p>
+          {!isEditing ? (
+            <>
+              <h1 className="truncate text-2xl font-bold text-slate-950">{user.name}</h1>
+              <p className="mt-2 flex items-center gap-2 text-sm font-medium text-slate-600">
+                <Mail className="h-4 w-4" aria-hidden="true" />
+                <span className="truncate">{user.email}</span>
+              </p>
+              <p className="mt-1 text-sm text-slate-500">Joined {formatDate(user.createdAt)}</p>
+            </>
+          ) : (
+            <div className="space-y-2">
+              <div>
+                <label className="block text-sm font-medium text-slate-700">Name</label>
+                <input
+                  value={nameField}
+                  onChange={(e) => setNameField(e.target.value)}
+                  className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 shadow-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700">Avatar</label>
+                <div className="mt-1 flex items-center gap-3">
+                  <Avatar user={{ name: nameField, avatar: avatarField }} size="md" />
+                  <div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleAvatarFileChange}
+                      className="mt-1 block text-sm text-slate-600"
+                    />
+                    {uploading ? <p className="text-sm text-slate-500">Uploading...</p> : null}
+                    {avatarField ? (
+                      <p className="text-sm text-slate-500 truncate max-w-xs">{avatarField}</p>
+                    ) : null}
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={async () => {
+                    if (!nameField || nameField.trim().length < 2) {
+                      toast.error("Name must be at least 2 characters");
+                      return;
+                    }
+
+                    setSaving(true);
+
+                    try {
+                      await api.put("/auth/me", { name: nameField, avatar: avatarField });
+                      await refreshUser();
+                      toast.success("Profile updated");
+                      setIsEditing(false);
+                    } catch (error) {
+                      toast.error(getErrorMessage(error, "Could not update profile"));
+                    } finally {
+                      setSaving(false);
+                    }
+                  }}
+                  disabled={saving}
+                  className="btn-ombre inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-bold"
+                >
+                  Save
+                </button>
+                <button
+                  onClick={() => {
+                    setIsEditing(false);
+                    setNameField(user?.name || "");
+                    setAvatarField(user?.avatar || "");
+                  }}
+                  disabled={saving}
+                  className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
         </div>
-        <Link
-          to="/create-post"
-          className="btn-ombre inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold"
-        >
-          <PenSquare className="h-4 w-4" aria-hidden="true" />
-          New post
-        </Link>
+        <div className="flex items-center gap-2">
+          {!isEditing ? (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium"
+            >
+              Edit profile
+            </button>
+          ) : null}
+
+          <Link
+            to="/create-post"
+            className="btn-ombre inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold"
+          >
+            <PenSquare className="h-4 w-4" aria-hidden="true" />
+            New post
+          </Link>
+        </div>
       </div>
 
       <div className="mt-8 flex items-center justify-between gap-4">

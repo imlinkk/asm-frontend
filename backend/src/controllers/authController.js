@@ -47,4 +47,49 @@ const getMe = async (req, res) => {
   res.status(200).json({ user: req.user.toSafeJSON() });
 };
 
-module.exports = { register, login, getMe };
+const updateProfile = async (req, res, next) => {
+  try {
+    const { name, avatar } = req.body;
+
+    const user = req.user;
+
+    if (name) {
+      user.name = name;
+    }
+
+    // allow clearing avatar by sending empty string
+    if (typeof avatar !== "undefined") {
+      user.avatar = avatar;
+    }
+
+    await user.save();
+
+    res.status(200).json({ user: user.toSafeJSON() });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const uploadAvatar = async (req, res, next) => {
+  try {
+    if (!req.file) {
+      const error = new Error("No file uploaded");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const filename = req.file.filename;
+    const host = process.env.SERVER_URL || `http://localhost:${process.env.PORT || 5000}`;
+    const url = `${host}/uploads/avatars/${filename}`;
+
+    const user = req.user;
+    user.avatar = url;
+    await user.save();
+
+    res.status(200).json({ url: user.avatar });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { register, login, getMe, updateProfile, uploadAvatar };

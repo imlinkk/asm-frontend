@@ -48,8 +48,18 @@ const getPosts = async (req, res, next) => {
       Post.countDocuments(filter)
     ]);
 
+    const commentCounts = await Comment.aggregate([
+      { $match: { post: { $in: posts.map((post) => post._id) } } },
+      { $group: { _id: "$post", count: { $sum: 1 } } }
+    ]);
+    const commentCountByPostId = new Map(commentCounts.map((item) => [String(item._id), item.count]));
+
     res.status(200).json({
-      posts: posts.map((post) => serializePost(post, req.user?._id)),
+      posts: posts.map((post) =>
+        serializePost(post, req.user?._id, {
+          commentCount: commentCountByPostId.get(String(post._id)) || 0
+        })
+      ),
       totalPages: Math.ceil(total / limit) || 1,
       currentPage: page,
       total

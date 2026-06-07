@@ -1,4 +1,4 @@
-const serializePost = (post, currentUserId = null) => {
+const serializePost = (post, currentUserId = null, extras = {}) => {
   const plainPost = post.toObject ? post.toObject({ virtuals: true }) : post;
   const likes = plainPost.likes || [];
   const likedByMe = currentUserId
@@ -9,7 +9,8 @@ const serializePost = (post, currentUserId = null) => {
     ...plainPost,
     likes: undefined,
     likeCount: likes.length,
-    likedByMe
+    likedByMe,
+    ...extras
   };
 };
 

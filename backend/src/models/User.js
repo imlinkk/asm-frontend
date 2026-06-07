@@ -27,6 +27,12 @@ const userSchema = new mongoose.Schema(
     avatar: {
       type: String,
       default: ""
+    },
+    role: {
+      type: String,
+      enum: ["user", "admin"],
+      default: "user",
+      index: true
     }
   },
   { timestamps: true }
@@ -52,6 +58,7 @@ userSchema.methods.toSafeJSON = function toSafeJSON() {
     name: this.name,
     email: this.email,
     avatar: this.avatar,
+    role: this.role || "user",
     createdAt: this.createdAt,
     updatedAt: this.updatedAt
   };

@@ -11,7 +11,7 @@ Project duoc tach thanh 2 ung dung rieng:
 - Posts: list, detail, create, update, delete, search title case-insensitive, filter category, pagination.
 - Comments: list, create, delete theo quyen nguoi viet comment hoac chu bai viet.
 - Likes: toggle like/unlike va tra ve `likeCount`, `likedByMe`.
-- Frontend: home, detail, login, register, create, edit, profile, protected route, loading state, toast, responsive UI.
+- Frontend: home, detail, login, register, create, edit, profile, admin, protected route, loading state, toast, responsive UI.
 
 ## Yeu cau moi truong
 
@@ -36,6 +36,7 @@ MONGO_URI=mongodb://127.0.0.1:27017/blog_assignment
 JWT_SECRET=change_this_to_a_long_random_secret
 JWT_EXPIRES_IN=7d
 CLIENT_URL=http://localhost:5173
+
 ```
 
 API health check: `GET http://localhost:5000/api/health`
@@ -65,6 +66,13 @@ Frontend mac dinh chay tai `http://localhost:5173`.
 - `POST /api/posts/:postId/comments`
 - `DELETE /api/comments/:id`
 - `POST /api/posts/:id/like`
+- `GET /api/admin/overview`
+- `GET /api/admin/posts`
+- `DELETE /api/admin/posts/:id`
+- `GET /api/admin/users`
+- `PUT /api/admin/users/:id/role`
+- `GET /api/admin/comments`
+- `DELETE /api/admin/comments/:id`
 
 ## Postman
 

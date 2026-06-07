@@ -1,6 +1,11 @@
 const User = require("../models/User");
 const generateToken = require("../utils/generateToken");
 
+const shouldBeAdmin = (email) => {
+  const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+  return Boolean(adminEmail && email?.toLowerCase() === adminEmail);
+};
+
 const sendAuthResponse = (res, statusCode, user) => {
   res.status(statusCode).json({
     token: generateToken(user._id),
@@ -19,7 +24,13 @@ const register = async (req, res, next) => {
       throw error;
     }
 
-    const user = await User.create({ name, email, password, avatar });
+    const user = await User.create({
+      name,
+      email,
+      password,
+      avatar,
+      role: shouldBeAdmin(email) ? "admin" : "user"
+    });
     sendAuthResponse(res, 201, user);
   } catch (error) {
     next(error);
@@ -37,14 +48,28 @@ const login = async (req, res, next) => {
       throw error;
     }
 
+    if (shouldBeAdmin(user.email) && user.role !== "admin") {
+      user.role = "admin";
+      await user.save();
+    }
+
     sendAuthResponse(res, 200, user);
   } catch (error) {
     next(error);
   }
 };
 
-const getMe = async (req, res) => {
-  res.status(200).json({ user: req.user.toSafeJSON() });
+const getMe = async (req, res, next) => {
+  try {
+    if (shouldBeAdmin(req.user.email) && req.user.role !== "admin") {
+      req.user.role = "admin";
+      await req.user.save();
+    }
+
+    res.status(200).json({ user: req.user.toSafeJSON() });
+  } catch (error) {
+    next(error);
+  }
 };
 
 const updateProfile = async (req, res, next) => {

@@ -7,6 +7,7 @@ import {
   LogOut,
   Menu,
   PenSquare,
+  Shield,
   UserCircle,
   X
 } from "lucide-react";
@@ -29,6 +30,7 @@ const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const profileMenuRef = useRef(null);
+  
 
   useEffect(() => {
     if (!profileMenuOpen) {
@@ -91,10 +93,13 @@ const Navbar = () => {
             <HomeIcon className="h-5 w-5" aria-hidden="true" />
           </NavLink>
           {user ? (
-            <NavLink to="/create-post" className={navLinkClass}>
-              <PenSquare className="h-4 w-4" aria-hidden="true" />
-              New Post
-            </NavLink>
+            <>
+              <NavLink to="/create-post" className={navLinkClass}>
+                <PenSquare className="h-4 w-4" aria-hidden="true" />
+                New Post
+              </NavLink>
+              
+            </>
           ) : null}
         </div>
 
@@ -146,6 +151,7 @@ const Navbar = () => {
                     <PenSquare className="h-4 w-4" aria-hidden="true" />
                     New Post
                   </Link>
+                  
                   <button
                     type="button"
                     onClick={handleLogout}
@@ -192,6 +198,7 @@ const Navbar = () => {
                   <PenSquare className="h-4 w-4" aria-hidden="true" />
                   New Post
                 </NavLink>
+                
                 <Link
                   to="/profile"
                   onClick={closeMenus}

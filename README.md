@@ -1,25 +1,25 @@
 ﻿# BlogSpace REST API + React SPA
 
-Project duoc tach thanh 2 ung dung rieng:
+Project được tách thành 2 ứng dụng riêng:
 
-- `backend`: RESTful API dung Node.js, Express.js, MongoDB, Mongoose, JWT, bcryptjs.
-- `frontend`: React 18 SPA khoi tao theo Vite, dung React Router v6, Axios, Tailwind CSS, Context API, React Hook Form va Zod.
+- `backend`: RESTful API dùng Node.js, Express.js, MongoDB, Mongoose, JWT, bcryptjs.
+- `frontend`: React 18 SPA khởi tạo theo Vite, dùng React Router v6, Axios, Tailwind CSS, Context API, React Hook Form và Zod.
 
-## Chuc nang da trien khai
+## Chức năng đã triển khai:
 
 - Auth: register, login, JWT, `/api/auth/me`, protected middleware.
 - Posts: list, detail, create, update, delete, search title case-insensitive, filter category, pagination.
-- Comments: list, create, delete theo quyen nguoi viet comment hoac chu bai viet.
-- Likes: toggle like/unlike va tra ve `likeCount`, `likedByMe`.
+- Comments: list, create, delete theo quyền người viết comment hoac chủ bài viết.
+- Likes: toggle like/unlike và trả về `likeCount`, `likedByMe`.
 - Frontend: home, detail, login, register, create, edit, profile, admin, protected route, loading state, toast, responsive UI.
 
-## Yeu cau moi truong
+## Môi trường sử dụng
 
-- Node.js 18+
-- MongoDB local hoac MongoDB Atlas
-- Postman hoac Thunder Client
+- Node.js v20+
+- MongoDB local
+- Postman 
 
-## Chay backend
+## Chạy backend
 
 ```bash
 cd backend
@@ -28,7 +28,7 @@ copy .env.example .env
 npm run dev
 ```
 
-Cap nhat `.env` neu can:
+Cập nhật `.env` nếu cần:
 
 ```env
 PORT=5000
@@ -41,7 +41,7 @@ CLIENT_URL=http://localhost:5173
 
 API health check: `GET http://localhost:5000/api/health`
 
-## Chay frontend
+## Chạy frontend
 
 ```bash
 cd frontend
@@ -50,7 +50,7 @@ copy .env.example .env
 npm run dev
 ```
 
-Frontend mac dinh chay tai `http://localhost:5173`.
+Frontend mặc định chạy tại `http://localhost:5173`.
 
 ## API endpoints
 
@@ -76,4 +76,4 @@ Frontend mac dinh chay tai `http://localhost:5173`.
 
 ## Postman
 
-Import file `postman/BlogSpace.postman_collection.json`, sau do chay `Register` hoac `Login` de collection tu luu JWT vao bien `token`.
+Import file `postman/BlogSpace.postman_collection.json`, sau đó chạy `Register` hoặc `Login` để collection tự lưu JWT vào biến `token`.
